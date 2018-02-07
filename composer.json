@@ -1,0 +1,24 @@
+{
+    "name": "infohoundru/cards",
+    "description": "PHP SDK for cards.infohound.ru",
+    "type": "library",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Infohound Dev team",
+            "email": "dev@infohound.ru"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Infohoundru\\Cards\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Infohoundru\\Tests\\": "tests/"
+        }
+    }
+}
+
