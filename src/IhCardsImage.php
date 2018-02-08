@@ -1,5 +1,5 @@
 <?php
-namespace
+namespace Infohoundru\Cards;
 /**
  * Class IhCards
  * @package IhCards
@@ -41,7 +41,7 @@ class IhCardsImage
     /**
      * Connect address.
      */
-    protected const TCP = 'http://api.cards.infohound.ru/';
+    const TCP = 'http://api.cards.infohound.ru/';
 
     /**
      * IhCardsImage constructor.

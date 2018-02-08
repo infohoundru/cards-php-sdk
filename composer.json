@@ -12,12 +12,12 @@
     "require": {},
     "autoload": {
         "psr-4": {
-            "Infohoundru\\Cards\\": "src/"
+            "Infohoundru\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Infohoundru\\Tests\\": "tests/"
+            "Infohoundru\\tests\\": "tests/"
         }
     }
 }
