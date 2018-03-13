@@ -12,9 +12,9 @@ PHP-SDK с примером интеграции сервиса распозно
 1. Пользователь загружает через виджет фото на бэкенд Компании, откуда в режиме реального времени фото передается на API-метод `upload`.
 2. Пользователю открывается фото-редактор с возможностью обрезать/подогнать под размер
 фотографию карты.
-3. Пользователь нажимает **Сохранить**, в этот момент на бэкенд Компании отправляется запрос на метод `crop`.
-4. Далее Компания должна послать запрос на API-метод apply с именем на карты, номером карты и сроком ее истечения.
-5. 
+3. Пользователь нажимает **Сохранить**, в этот момент на бэкенд Компании отправляется запрос на метод `crop-photo`.
+4. Пользователю открывается форма с отображением обрезанной карты и полями для ввода данных с карты (имя владельца, номер карты, срок действия карты).
+5. Пользователь вводит данные в поля и нажимает **Подтвердить?**. В ответ возвращается json с ссылкой для просмотра результата.
 
 ## Описание методов API
 Базовый адрес API `http://api.cards.infohound.ru`. Запросы отправляются по HTTP-протоколу, согласно документации. Для авторизации по протоколу [OAuth2](https://ru.wikipedia.org/wiki/OAuth).
@@ -34,7 +34,7 @@ PHP-SDK с примером интеграции сервиса распозно
 ```
    {  
       "ok":"1",
-      "info":"http:\/\/api.cards.infohound.ru\/get-photo\/1",
+      "info":"http:\/\/api.cards.infohound.ru\/get-photo\/dc376921-e455-47e0-9579-1859f9c8a6d3",
       "width":800,
       "height":600
    }
@@ -49,15 +49,16 @@ PHP-SDK с примером интеграции сервиса распозно
     -H 'Accept: application/json' \
     -F viewPortW=1024
     -F viewPortH=1024
-    -F imageSource=http://api.cards.infohound.local/get-photo/6
+    -F imageSource=http://api.cards.infohound.local/get-photo/dc376921-e455-47e0-9579-1859f9c8a6d3
     -F martrix[0]=1
 ```
 Где `accesstokenhere` - ваш токен, полученный в личном кабинете.
-`matrix` - матрица с афинными преобразованиями, полученная из виджета.
+`matrix` - матрица с афинными преобразованиями.
+`viewPortH, viewPortW, matrix` - считаются в виджете.
 
 #### Ответ
 ```{  
-      "file":"http:\/\/api.cards.infohound.local\/get-photo\/6\/cropped",
+      "file":"http:\/\/api.cards.infohound.local\/get-photo\/dc376921-e455-47e0-9579-1859f9c8a6d3\/cropped",
       "edges":[  
          {  
             "count":108,
@@ -106,30 +107,31 @@ PHP-SDK с примером интеграции сервиса распозно
             "bad":false
          }
       ],
-      "id":"6"
+      "id":"dc376921-e455-47e0-9579-1859f9c8a6d3"
    }
 ```
+Где `file` - ссылка на обрезанное фото.
 
 ### POST /apply
 ```curl -X POST \
     http://api.cards.infohound.ru/apply/ \
     -H 'authorization: Bearer accesstokenhere' \
     -H 'Accept: application/json' \
-    -F id=6
+    -F id=dc376921-e455-47e0-9579-1859f9c8a6d3
     -F card_holder=IVAN IVANOV
     -F card_number=5213243700000000
     -F card_exp=2021/01
 ```
 
-Где `id` - `id` заявки из метода crop, `card_holder` - имя на карте, `card_number` - номер карты,
-а `card_exp` - дата истечения в формате `ГГГГ/ММ`
+Где `id` - `id` заявки из ответа метода crop-photo, `card_holder` - имя на карте, `card_number` - номер карты,
+а `card_exp` - дата истечения в формате `ГГГГ/ММ`.
 
 #### Ответ
 ```
 {
-    "id": 6,
+    "id": dc376921-e455-47e0-9579-1859f9c8a6d3,
     "status":"ok",
-    "url":"http:\/\/api.cards.infohound.local\/get-result?id=6"
+    "url":"http:\/\/api.cards.infohound.local\/get-result?id=dc376921-e455-47e0-9579-1859f9c8a6d3"
 }
 ```
 Где `url` - ссылка на результат.
@@ -141,14 +143,17 @@ PHP-SDK с примером интеграции сервиса распозно
     http://api.cards.infohound.ru/get-result/ \
     -H 'authorization: Bearer accesstokenhere' \
     -H 'Accept: application/json' \
-    -F id=6
+    -F id=dc376921-e455-47e0-9579-1859f9c8a6d3
 ```
 #### Ответ
-`"Photo in processing. Repeat the request after few seconds."`
-Заявка обрабатывается, попробуйте повторить запрос через несколько секунд.
+Заявка обрабатывается, попробуйте повторить запрос через несколько секунд:
+```
+"Photo in processing. Repeat the request after few seconds."
+```
+или результаты проверки:
 ```
 {  
-   "id":6,
+   "id":dc376921-e455-47e0-9579-1859f9c8a6d3,
    "scoreAccount":0.539316429425159,
    "scoreCardholder":0.2705212543675632,
    "scoreValid":0.5348315303041271,
@@ -157,7 +162,6 @@ PHP-SDK с примером интеграции сервиса распозно
    "details":"Изображение не содержит метаданных об исходной камере, и его сигнатура соответствует известным программным продуктам. "
 }
 ```
-
 Где `id` - наш `id` заявки.
 `scoreAccount` - соответствие номера карты на фото с введенным в apply (от 0 до 1).
 `scoreCardholder` - соответствие имени на фото с введенным в apply (от 0 до 1).
@@ -172,9 +176,9 @@ PHP-SDK с примером интеграции сервиса распозно
 
 #### Пример запроса
 ```curl -X GET \
-    http://api.cards.infohound.ru/get-photo/6 \
+    http://api.cards.infohound.ru/get-photo/dc376921-e455-47e0-9579-1859f9c8a6d3 \
     -H 'authorization: Bearer accesstokenhere' 
 ```
 
-Где `6` - наш `id` заявки.
+Где `dc376921-e455-47e0-9579-1859f9c8a6d3` - наш `id` заявки.
 `accesstokenhere` - ваш токен, полученный в личном кабинете.
