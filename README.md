@@ -22,7 +22,8 @@ PHP-SDK с примером интеграции сервиса распозно
 ### POST /upload 
 Загрузить фотографию для обрезки и дальнейшей обработки. 
 #### Пример запроса 
-```curl -X POST \
+```
+    curl -X POST \
     http://api.cards.infohound.ru/upload \
     -H 'authorization: Bearer accesstokenhere' \
     -H 'Accept: application/json' \
@@ -44,7 +45,8 @@ PHP-SDK с примером интеграции сервиса распозно
 
 ### POST /crop-photo/
 #### Пример запроса 
-```curl -X POST \
+```
+    curl -X POST \
     http://api.cards.infohound.ru/crop-photo/ \
     -H 'authorization: Bearer accesstokenhere' \
     -H 'Accept: application/json' \
@@ -58,7 +60,8 @@ PHP-SDK с примером интеграции сервиса распозно
 `viewPortH, viewPortW, matrix` - считаются в виджете.
 
 #### Ответ
-```{  
+```
+    {
       "file":"http:\/\/api.cards.infohound.local\/get-photo?token=oKQnITnvObmXN2wcFPvtE7Hv74pDB3Prb7cSNedklcgXNqvWQMviWlDiS7VV&cropped=1",
       "edges":[  
          {  
@@ -115,7 +118,8 @@ PHP-SDK с примером интеграции сервиса распозно
 `token` - токен, использующийся в методах /get-photo, /apply и /get-result, действителен 24 часа.
 
 ### POST /apply
-```curl -X POST \
+```
+    curl -X POST \
     http://api.cards.infohound.ru/apply/ \
     -H 'authorization: Bearer accesstokenhere' \
     -H 'Accept: application/json' \
@@ -142,7 +146,8 @@ PHP-SDK с примером интеграции сервиса распозно
 ### GET /get-result/
 Получить итоговый результат.
 #### Пример запроса
-```curl -X POST \
+```
+    curl -X POST \
     http://api.cards.infohound.ru/get-result/ \
     -H 'authorization: Bearer accesstokenhere' \
     -H 'Accept: application/json' \
@@ -155,8 +160,7 @@ PHP-SDK с примером интеграции сервиса распозно
 ```
 или результаты проверки:
 ```
-{  
-   "id":dc376921-e455-47e0-9579-1859f9c8a6d3,
+{
    "scoreAccount":0.539316429425159,
    "scoreCardholder":0.2705212543675632,
    "scoreValid":0.5348315303041271,
@@ -165,8 +169,7 @@ PHP-SDK с примером интеграции сервиса распозно
    "details":"Изображение не содержит метаданных об исходной камере, и его сигнатура соответствует известным программным продуктам. "
 }
 ```
-Где `id` - наш `id` заявки.
-`scoreAccount` - соответствие номера карты на фото с введенным в apply (от 0 до 1).
+Где `scoreAccount` - соответствие номера карты на фото с введенным в apply (от 0 до 1).
 `scoreCardholder` - соответствие имени на фото с введенным в apply (от 0 до 1).
 `scoreValid` - соответствие срока действия карты на фото с введенным в apply (от 0 до 1).
 `answer` - обработано ли фото. `RED` - обработано, `GREEN` - фото не проходило обработку.
@@ -178,7 +181,8 @@ PHP-SDK с примером интеграции сервиса распозно
 Получить фото. В случае успеха в ответ приходит фотография карты.
 
 #### Пример запроса
-```curl -X GET \
+```
+    curl -X GET \
     http://api.cards.infohound.ru/get-photo?token=oKQnITnvObmXN2wcFPvtE7Hv74pDB3Prb7cSNedklcgXNqvWQMviWlDiS7VV \
     -H 'authorization: Bearer accesstokenhere' 
 ```
