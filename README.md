@@ -34,12 +34,13 @@ PHP-SDK с примером интеграции сервиса распозно
 ```
    {  
       "ok":"1",
-      "info":"http:\/\/api.cards.infohound.ru\/get-photo\/dc376921-e455-47e0-9579-1859f9c8a6d3",
+      "info":"http:\/\/api.cards.infohound.local\/get-photo?token=oKQnITnvObmXN2wcFPvtE7Hv74pDB3Prb7cSNedklcgXNqvWQMviWlDiS7VV",
       "width":800,
       "height":600
    }
 ```
 Где `info` - url фото-оригинала, а `width` и `height` - ширина и высота, соответственно.
+`token` в url действителен сутки. Спустя 24 часа url становится недействительным.
 
 ### POST /crop-photo/
 #### Пример запроса 
@@ -49,7 +50,7 @@ PHP-SDK с примером интеграции сервиса распозно
     -H 'Accept: application/json' \
     -F viewPortW=1024
     -F viewPortH=1024
-    -F imageSource=http://api.cards.infohound.local/get-photo/dc376921-e455-47e0-9579-1859f9c8a6d3
+    -F imageSource=http://api.cards.infohound.local/get-photo?token=oKQnITnvObmXN2wcFPvtE7Hv74pDB3Prb7cSNedklcgXNqvWQMviWlDiS7VV
     -F martrix[0]=1
 ```
 Где `accesstokenhere` - ваш токен, полученный в личном кабинете.
@@ -58,7 +59,7 @@ PHP-SDK с примером интеграции сервиса распозно
 
 #### Ответ
 ```{  
-      "file":"http:\/\/api.cards.infohound.local\/get-photo\/dc376921-e455-47e0-9579-1859f9c8a6d3\/cropped",
+      "file":"http:\/\/api.cards.infohound.local\/get-photo?token=oKQnITnvObmXN2wcFPvtE7Hv74pDB3Prb7cSNedklcgXNqvWQMviWlDiS7VV&cropped=1",
       "edges":[  
          {  
             "count":108,
@@ -107,34 +108,36 @@ PHP-SDK с примером интеграции сервиса распозно
             "bad":false
          }
       ],
-      "id":"dc376921-e455-47e0-9579-1859f9c8a6d3"
+      "token":"oKQnITnvObmXN2wcFPvtE7Hv74pDB3Prb7cSNedklcgXNqvWQMviWlDiS7VV"
    }
 ```
-Где `file` - ссылка на обрезанное фото.
+Где `file` - ссылка на обрезанное фото,
+`token` - токен, использующийся в методах /get-photo, /apply и /get-result, действителен 24 часа.
 
 ### POST /apply
 ```curl -X POST \
     http://api.cards.infohound.ru/apply/ \
     -H 'authorization: Bearer accesstokenhere' \
     -H 'Accept: application/json' \
-    -F id=dc376921-e455-47e0-9579-1859f9c8a6d3
+    -F token=oKQnITnvObmXN2wcFPvtE7Hv74pDB3Prb7cSNedklcgXNqvWQMviWlDiS7VV
     -F card_holder=IVAN IVANOV
     -F card_number=5213243700000000
-    -F card_exp=2021/01
+    -F card_exp=2021-01-01
 ```
 
-Где `id` - `id` заявки из ответа метода crop-photo, `card_holder` - имя на карте, `card_number` - номер карты,
-а `card_exp` - дата истечения в формате `ГГГГ/ММ`.
+Где `token` - `token` заявки из ответа метода crop-photo, `card_holder` - имя на карте, `card_number` - номер карты,
+а `card_exp` - дата истечения в формате `ГГГГ-ММ-DD`.
 
 #### Ответ
 ```
 {
-    "id": dc376921-e455-47e0-9579-1859f9c8a6d3,
     "status":"ok",
-    "url":"http:\/\/api.cards.infohound.local\/get-result?id=dc376921-e455-47e0-9579-1859f9c8a6d3"
+    "cropped_photo":"http:\/\/api.cards.infohound.local\/get-photo?token=oKQnITnvObmXN2wcFPvtE7Hv74pDB3Prb7cSNedklcgXNqvWQMviWlDiS7VV&cropped=1",
+    "get_result":"http:\/\/api.cards.infohound.local\/get-result?token=oKQnITnvObmXN2wcFPvtE7Hv74pDB3Prb7cSNedklcgXNqvWQMviWlDiS7VV"
 }
 ```
-Где `url` - ссылка на результат.
+Где `cropped_photo` - ссылка на обрезанное фото,
+`get_result` - ссылка на получение результата по фото.
 
 ### GET /get-result/
 Получить итоговый результат.
@@ -143,7 +146,7 @@ PHP-SDK с примером интеграции сервиса распозно
     http://api.cards.infohound.ru/get-result/ \
     -H 'authorization: Bearer accesstokenhere' \
     -H 'Accept: application/json' \
-    -F id=dc376921-e455-47e0-9579-1859f9c8a6d3
+    -F token=oKQnITnvObmXN2wcFPvtE7Hv74pDB3Prb7cSNedklcgXNqvWQMviWlDiS7VV
 ```
 #### Ответ
 Заявка обрабатывается, попробуйте повторить запрос через несколько секунд:
@@ -171,14 +174,14 @@ PHP-SDK с примером интеграции сервиса распозно
 `details` - подробный вывод (по-русски).
 
 
-### GET /get-photo/{id}
+### GET /get-photo/
 Получить фото. В случае успеха в ответ приходит фотография карты.
 
 #### Пример запроса
 ```curl -X GET \
-    http://api.cards.infohound.ru/get-photo/dc376921-e455-47e0-9579-1859f9c8a6d3 \
+    http://api.cards.infohound.ru/get-photo?token=oKQnITnvObmXN2wcFPvtE7Hv74pDB3Prb7cSNedklcgXNqvWQMviWlDiS7VV \
     -H 'authorization: Bearer accesstokenhere' 
 ```
 
-Где `dc376921-e455-47e0-9579-1859f9c8a6d3` - наш `id` заявки.
+Где `token` - `token` заявки.
 `accesstokenhere` - ваш токен, полученный в личном кабинете.
