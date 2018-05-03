@@ -1,5 +1,7 @@
 <?php
+
 namespace Infohoundru\Cards;
+
 /**
  * Class IhCards
  * @package IhCards

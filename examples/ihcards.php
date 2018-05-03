@@ -1,10 +1,12 @@
 <?php
 
-require_once __DIR__ . '/vendor/autoload.php';
+# Подключение класса IhCardsImage
+# require_once '/path/to/autoload.php'; # Если в вашем проекте есть автозагрузчик.
+require_once '/path/to/IhCardsImage.php'; # Если автозагрзчика нет.
 
 $action = isset($_GET['act']) ? $_GET['act'] : false;
 
-$access_token = '';
+$access_token = 'your_access_token';
 
 try {
     if (false === $action) {
