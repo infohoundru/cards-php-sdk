@@ -43,7 +43,7 @@ class IhCardsImage
     /**
      * Connect address.
      */
-    const TCP = 'http://api.cards.infohound.ru/';
+    const TCP = 'https://api.infohound.ru/';
 
     /**
      * IhCardsImage constructor.
