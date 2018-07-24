@@ -17,12 +17,12 @@
 ```
    {
       "ok":"1",
-      "info":"https:\/\/api.infohound.local\/get-photo?token=oKQnITnvObmXN2wcFPvtE7Hv74pDB3Prb7cSNedklcgXNqvWQMviWlDiS7VV",
+      "info":"https:\/\/api.infohound.ru\/get-photo?token=oKQnITnvObmXN2wcFPvtE7Hv74pDB3Prb7cSNedklcgXNqvWQMviWlDiS7VV",
       "width":800,
       "height":600
    }
 ```
-Где `info` - url фото-оригинала, а `width` и `height` - ширина и высота, соответственно.
+Где `info` - url фото-оригинала, а `width` и `height` - ширина и в пикселях, соответственно.
 `token` в url действителен сутки. Спустя 24 часа url становится недействительным.
 
 ### POST /crop-photo/
@@ -32,19 +32,74 @@
     https://api.infohound.ru/crop-photo/ \
     -H 'authorization: Bearer accesstokenhere' \
     -H 'Accept: application/json' \
-    -F viewPortW=1024
-    -F viewPortH=1024
     -F imageSource=https://api.infohound.ru/get-photo?token=oKQnITnvObmXN2wcFPvtE7Hv74pDB3Prb7cSNedklcgXNqvWQMviWlDiS7VV
-    -F martrix[0]=1
+    -F matrix[0][]: 0.528169014084507
+    -F matrix[0][]: 0
+    -F matrix[0][]: -20
+    -F matrix[1][]: 0
+    -F matrix[1][]: 0.528169014084507
+    -F matrix[1][]: -12.957746478873219
+    -F matrix[2][]: 0
+    -F matrix[2][]: 0
+    -F matrix[2][]: 1
 ```
 Где `accesstokenhere` - ваш токен, полученный в личном кабинете.
-`matrix` - матрица с афинными преобразованиями.
-`viewPortH, viewPortW, matrix` - считаются в виджете.
+`matrix` - матрица 3 на 3 с аффинными преобразованиями. Она необходима для обрезки фотографии строго по краям карты.
+Обрезка происходит автоматически на стороне нашего сервера.
+
+#### Как считается matrix
+
+Изначально матрица имеет вид:
+```
+         [1 0 0]
+matrix = [0 1 0]
+         [0 0 1]
+```
+
+При масштабировании фотографии:
+```
+         [scale 0     0]
+matrix = [0     scale 0] * matrix
+         [0     0     1]
+```
+
+При повороте фотогарфии вокруг центра координат:
+```
+         [cos -sin  0]
+matrix = [sin  cos  0] * matrix
+         [0    0    1]
+```
+
+Отражение относительно оси Х:
+```
+         [-1 0 0]
+matrix = [ 0 1 0] * matrix
+         [ 0 0 1]
+```
+
+Перемещение фотографии по осям Х и У:
+```
+         [1 0 x]
+matrix = [0 1 y] * matrix
+         [0 0 1]
+```
+
+Перед отправкой фото на обрезку:
+```
+                  [1 0 -img_w/2]
+matrix = matrix * [0 1 -img_h/2]
+                  [0 0  1      ]
+
+         [1 0 710/2]
+matrix = [0 1 460/2] * matrix
+         [0 0 1    ]
+```
+где img_w ширина загруженной фотографии в пикселях, img_w - высота.
 
 #### Ответ
 ```
     {
-      "file":"http:\/\/api.infohound.ru\/get-photo?token=oKQnITnvObmXN2wcFPvtE7Hv74pDB3Prb7cSNedklcgXNqvWQMviWlDiS7VV&cropped=1",
+      "file":"https:\/\/api.infohound.ru\/get-photo?token=oKQnITnvObmXN2wcFPvtE7Hv74pDB3Prb7cSNedklcgXNqvWQMviWlDiS7VV&cropped=1",
       "edges":[
          {
             "count":108,
@@ -118,8 +173,8 @@
 ```
 {
     "status":"ok",
-    "cropped_photo":"https:\/\/api.infohound.local\/get-photo?token=oKQnITnvObmXN2wcFPvtE7Hv74pDB3Prb7cSNedklcgXNqvWQMviWlDiS7VV&cropped=1",
-    "get_result":"https:\/\/api.infohound.local\/get-result?token=oKQnITnvObmXN2wcFPvtE7Hv74pDB3Prb7cSNedklcgXNqvWQMviWlDiS7VV"
+    "cropped_photo":"https:\/\/api.infohound.ru\/get-photo?token=oKQnITnvObmXN2wcFPvtE7Hv74pDB3Prb7cSNedklcgXNqvWQMviWlDiS7VV&cropped=1",
+    "get_result":"https:\/\/api.infohound.ru\/get-result?token=oKQnITnvObmXN2wcFPvtE7Hv74pDB3Prb7cSNedklcgXNqvWQMviWlDiS7VV"
 }
 ```
 Где `cropped_photo` - ссылка на обрезанное фото,

@@ -28,3 +28,16 @@
 ```
 В **data-path_to_php** необходимо указать путь к файлу, который отправит данные из формы на наш сервис. Пример такого файла можно посмотреть здесь [ihcards.php](https://github.com/infohoundru/cards-php-sdk/blob/master/examples/ihcards.php).
 В переменную **$access_token** в ihcards.php необходимо подставить ваш персональный токен доступа. К данному файлу необходимо подключить класс [IhCardsImage](https://github.com/infohoundru/cards-php-sdk/blob/master/src/IhCardsImage.php).
+
+### 4. Разработка вашей собственной формы
+Если наша готовая форма загрузки фотографии не подходит, вы можете написать собственную.
+
+#### Порядок вызова методов API
+1. /upload/
+2. /crop-photo/
+3. /apply/
+4. /get-result/
+
+#### Читайте также:
+1. [Описание методов API](https://github.com/infohoundru/cards-php-sdk/blob/master/docs/api_methods.md)
+2. [Готовая реализация отправки данных из формы на API](https://cards.infohound.ru/js/for_web_form/combineForm.js)
