@@ -12,7 +12,8 @@
 <head>
     ...
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://cards.infohound.ru/js/for_web_form/combineForm.js"></script>
+    <script src="https://cards.infohound.ru/js/clearForm.js"></script>
+    <script src="https://cards.infohound.ru/js/bootstrap-modal.min.js"></script>
 </head>
 
 ```
@@ -22,15 +23,15 @@
 ```
 <body>
     ...
-    <div id="icards-form" data-color="" data-api_url="" data-path_to_php="ihcards.php"></div>
+    <div id="icards-form" data-path_to_php="ihcards.php"></div>
     ...
 </body>
 ```
 В **data-path_to_php** необходимо указать путь к файлу, который отправит данные из формы на наш сервис. Пример такого файла можно посмотреть здесь [ihcards.php](https://github.com/infohoundru/cards-php-sdk/blob/master/examples/ihcards.php).
 В переменную **$access_token** в ihcards.php необходимо подставить ваш персональный токен доступа. К данному файлу необходимо подключить класс [IhCardsImage](https://github.com/infohoundru/cards-php-sdk/blob/master/src/IhCardsImage.php).
 
-### 4. Разработка вашей собственной формы
-Если наша готовая форма загрузки фотографии не подходит, вы можете написать собственную.
+### 4. Добавление стилей для формы
+В нашей форме почти отсутствуют стили. Это необходимо для облегчённой адаптации под индивидуальный дизайн. Вы можете подключить собственные css файлы.
 
 #### Порядок вызова методов API
 1. /upload/

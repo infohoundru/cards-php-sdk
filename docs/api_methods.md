@@ -99,6 +99,7 @@ matrix = [0 1 460/2] * matrix
 #### Ответ
 ```
     {
+      "api_url":"https://api.infohound.ru",
       "file":"https:\/\/api.infohound.ru\/get-photo?token=oKQnITnvObmXN2wcFPvtE7Hv74pDB3Prb7cSNedklcgXNqvWQMviWlDiS7VV&cropped=1",
       "edges":[
          {

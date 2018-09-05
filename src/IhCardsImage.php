@@ -1,7 +1,5 @@
 <?php
 
-namespace Infohoundru\Cards;
-
 /**
  * Class IhCards
  * @package IhCards
@@ -43,7 +41,7 @@ class IhCardsImage
     /**
      * Connect address.
      */
-    const TCP = 'https://api.infohound.ru/';
+    protected $tcp;
 
     /**
      * IhCardsImage constructor.
@@ -61,6 +59,7 @@ class IhCardsImage
 
         $this->token = $token;
         $this->action = $action;
+        $this->tcp = 'https://api.infohound.ru/';
     }
 
     /**
@@ -107,6 +106,8 @@ class IhCardsImage
         $response = $this->send($curl);
         $this->checkError($curl);
 
+        $this->setResponseCode($curl);
+
         curl_close($curl);
 
         return $response;
@@ -120,7 +121,7 @@ class IhCardsImage
      */
     private function setOpt($curl)
     {
-        curl_setopt($curl, CURLOPT_URL, self::TCP . $this->action);
+        curl_setopt($curl, CURLOPT_URL, $this->tcp . $this->action);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $this->getRequestHeaders());
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($curl, CURLOPT_HEADER, false);
@@ -195,11 +196,22 @@ class IhCardsImage
     }
 
     /**
+     * Set HTTP Status Code.
+     *
+     * @param $curl
+     */
+    private function setResponseCode($curl)
+    {
+        http_response_code(curl_getinfo($curl, CURLINFO_HTTP_CODE));
+    }
+
+    /**
      * Allows call '(new Class)->method' on protected methods.
      *
      * @param $name
      * @param $arguments
-     * @return bool
+     * @return bool|mixed
+     * @throws ReflectionException
      */
     public function __call($name, $arguments)
     {
